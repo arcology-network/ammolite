@@ -1,4 +1,4 @@
-# ammolite
+# Ammolite
 
 Ammolite is an automated-test framework to meet the needs of large-scale testing for Arcology network. 
 It was originally designed to help easily develop client-end logics for decentralized applications deployed
