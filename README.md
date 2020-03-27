@@ -1,5 +1,4 @@
 # Ammolite
-A framework for DApp automated-test and development.
 
 ## Introduction
 Ammolite is an automated-test and development framework to meet the needs of large-scale testing for Arcology network. 
