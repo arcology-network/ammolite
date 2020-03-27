@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+service DAppContainer {
+    rpc NewReceipts (stream Receipt) returns (NewReceiptsResponse) {}
+}
+
+message Receipt {
+    message Log {
+        repeated bytes topics = 1;
+        bytes data = 2;
+        bytes address = 3;
+    }
+    bytes txhash = 1;
+    bytes contract_address = 2;
+    uint64 status = 3;
+    repeated Log logs = 4;
+}
+
+message NewReceiptsResponse {
+    int32 status = 1;
+}

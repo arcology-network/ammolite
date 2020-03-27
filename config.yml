@@ -1,0 +1,4 @@
+server: {ip: localhost, port: 50001}
+clientsvc: localhost:50000
+dapps: {dapps.transfer: {count: 1}, dapps.phone_book.phone_book: {count: 1, args: {contract_address: 110f04e4690b504638ef281a8e190b00aedf1153}}}
+mongo: {ip: localhost, port: 32768}
