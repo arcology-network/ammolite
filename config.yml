@@ -1,4 +1,46 @@
 server: {ip: localhost, port: 50001}
 clientsvc: localhost:50000
-dapps: {dapps.transfer: {count: 1}, dapps.phone_book.phone_book: {count: 1, args: {contract_address: 110f04e4690b504638ef281a8e190b00aedf1153}}}
+dapps:
+  dapps.parallel_kitty.siring_auction_creator:
+    count: 1
+    args:
+      sale_auction_addr: 796b69363d0d6b8c34e80fb8fff186c43ec79606
+      kitty_core_addr: 422837ded18e01b60e03c47d628637a0e9fb412e
+  dapps.parallel_kitty.kitty_miner:
+    count: 1
+    args:
+      kitty_core_addr: 422837ded18e01b60e03c47d628637a0e9fb412e
+  dapps.parallel_kitty.gen0_auction_creator:
+    count: 1
+    args:
+      contract_address: 422837ded18e01b60e03c47d628637a0e9fb412e
+  dapps.parallel_kitty.sale_auction:
+    count: 1
+    args:
+      contract_address: 796b69363d0d6b8c34e80fb8fff186c43ec79606
+  dapps.parallel_kitty.kitty_raiser:
+    count: 1
+    args:
+      sale_auction_addr: 796b69363d0d6b8c34e80fb8fff186c43ec79606
+      kitty_core_addr: 422837ded18e01b60e03c47d628637a0e9fb412e
+  dapps.parallel_kitty.siring_auction:
+    count: 1
+    args:
+      siring_auction_addr: 30a977d84d7214d4ecd04f4a61e167f9966535c0
+      kitty_core_addr: 422837ded18e01b60e03c47d628637a0e9fb412e
+  dapps.parallel_kitty.siring_auction_bidder:
+    count: 1
+    args:
+      sale_auction_addr: 796b69363d0d6b8c34e80fb8fff186c43ec79606
+      kitty_core_addr: 422837ded18e01b60e03c47d628637a0e9fb412e
+  dapps.parallel_kitty.sale_auction_creator_and_bidder:
+    count: 1
+    args:
+      sale_auction_addr: 796b69363d0d6b8c34e80fb8fff186c43ec79606
+      kitty_core_addr: 422837ded18e01b60e03c47d628637a0e9fb412e
+  dapps.parallel_kitty.kitty_ownership:
+    count: 1
+    args:
+      kitty_core_addr: 422837ded18e01b60e03c47d628637a0e9fb412e
 mongo: {ip: localhost, port: 32768}
+blockinfo: {block_no: 10000260, seconds_per_block: 60}

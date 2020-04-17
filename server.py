@@ -98,7 +98,7 @@ def sighandler(sig, frame):
     sys.exit(0)
 
 def serve(config, accounts):
-    logging.basicConfig(format = '%(asctime)s [%(levelname)s]: [%(name)s] %(message)s', level=logging.DEBUG, datefmt='%H:%M:%S')
+    logging.basicConfig(format = '%(asctime)s [%(levelname)s]: [%(name)s] %(message)s', level=logging.INFO, datefmt='%H:%M:%S')
     logger = logging.getLogger('serve')
 
     input = queue.Queue()
@@ -152,9 +152,9 @@ def serve(config, accounts):
         quit = threading.Event()
         with futures.ThreadPoolExecutor(max_workers=2) as executor:
             executor.submit(receiveNewTxs, connstr, stub, output, quit)
-            executor.submit(runDAppContainer, instances, input, output, quit)
+            executor.submit(runDAppContainer, config['blockinfo'], instances, input, output, quit)
             logger.debug('after thread pool executor')
-            input.put({'anything':1})
+            input.put({})
 
             signal.signal(signal.SIGINT, sighandler)
             # server.wait_for_termination()

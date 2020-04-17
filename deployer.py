@@ -16,6 +16,13 @@ with open(sys.argv[1], 'r') as cf:
 
 priv_key = PrivateKey(bytes(bytearray.fromhex(config['priv_key'])))
 code = bytes(bytearray.fromhex(config['code']))
+data = code
+if 'params' in config:
+    for param in config['params']:
+        pStr = '0' * (64 - len(param)) + param
+        pbytes = bytes(bytearray.fromhex(pStr))
+        print(pStr)
+        data += pbytes
 
 with grpc.insecure_channel(config['client_svc']) as channel:
     stub = clientsvc_pb2_grpc.ClientServiceStub(channel)
@@ -25,7 +32,7 @@ with grpc.insecure_channel(config['client_svc']) as channel:
         'gas': int(1e10),
         'gasPrice': 1,
         'nonce': 0,
-        'data': code,
+        'data': data,
         'v': 1,
         'r': 0,
         's': 0,

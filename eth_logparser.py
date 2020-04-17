@@ -20,12 +20,14 @@ def parse_log(event, receipt):
         'contractAddress': receipt.contract_address,
         'logs': logs,
     }
-    logger.debug('txReceipt: %s', str(txReceipt))
+    # logger.debug('txReceipt: %s', str(txReceipt))
     processed_receipt = event.processReceipt(txReceipt, errors=IGNORE)
-    logger.debug('processed_receipt: %s', str(processed_receipt))
+    # logger.debug('processed_receipt: %s', str(processed_receipt))
 
     ret = []
     for r in processed_receipt:
+        if 'event' not in r:
+            continue
         ret.append({
             'args': r['args'],
             'event': r['event'],
