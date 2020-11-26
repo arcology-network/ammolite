@@ -113,6 +113,6 @@ For example:
 
 ### Examples
 
-* [Phone Book](https://github.com/HPISTechnologies/ammolite/tree/v2/examples/phone_book)
-* [Main Service](https://github.com/HPISTechnologies/ammolite/tree/v2/examples/main_service)
-* [Parallel Kitties](https://github.com/HPISTechnologies/ammolite/tree/v2/examples/parallel_kitties)
+* [Phone Book](https://github.com/arcology-network/ammolite/tree/v2/examples/phone_book)
+* [Main Service](https://github.com/arcology-network/ammolite/tree/v2/examples/main_service)
+* [Parallel Kitties](https://github.com/arcology-network/ammolite/tree/v2/examples/parallel_kitties)
