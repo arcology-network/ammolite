@@ -23,8 +23,8 @@ main_service_contract = cli.eth.contract(
 )
 
 account = Account(private_key)
-buf_size = 10
-batch_size = 2
+buf_size = 1000
+batch_size = 10
 index = 0
 buf = []
 
@@ -34,11 +34,11 @@ def create_new_txs(offset):
         tx = main_service_contract.functions.func(
             offset+i,
             int(0x010203040506),
-            b'This is the data segment',
+            #b'This is the data segment',
             storage_svc_address,
             int(0x010203),
             computing_svc_address,
-            5
+            10
         ).buildTransaction({
             'nonce': offset+i,
             'gas': 1000000,
@@ -47,6 +47,9 @@ def create_new_txs(offset):
         })
         raw_tx, tx_hash = account.sign(tx)
         txs.append([tx_hash, raw_tx])
+    if offset == 0:
+        for i in range(10):
+            print(txs[i][0].hex())
     return txs
 
 while True:
@@ -63,4 +66,4 @@ while True:
     for tx in txs:
         transactions[tx[0]] = tx[1]
     cli.sendTransactions(transactions)
-    time.sleep(10)
+    time.sleep(3)

@@ -100,6 +100,7 @@ def bid_on_siring_auction(accounts, kitties):
         processed_receipt = siring_auction_contract.processReceipt(receipt)
         if 'AuctionSuccessful' in processed_receipt:
             idsToRemove.append(processed_receipt['AuctionSuccessful']['tokenId'])
+            print(processed_receipt)
     db.siringauctions.remove({'id': {'$in': idsToRemove}})
 
     # Wait for the sirings complete.
@@ -109,6 +110,7 @@ def bid_on_siring_auction(accounts, kitties):
             item = db.siringauctioncomplete.find_one({'sireId': id})
             if item is not None:
                 db.siringauctioncomplete.delete_one({'sireId': id})
+                print(id)
                 break
             time.sleep(1)
 

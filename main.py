@@ -22,7 +22,10 @@ class Cli:
         data = {}
         for k, v in kwargs.items():
             if k == 'height':
-                data['height'] = v
+                if v == -1:
+                    data['height'] = 'latest'
+                else:
+                    data['height'] = v
             else:
                 assert False
         r = self.provider.make_request('GET', 'balances/' + address, data)
@@ -45,10 +48,25 @@ class Cli:
         
         return r.json()['receipts']
 
-    def getBlock(self, height):
-        r = self.provider.make_request('GET', 'blocks/' + str(height), {})
+    def getTransactionReceipt(self, tx_hash):
+        if isinstance(tx_hash, bytes):
+            tx_hash = tx_hash.hex()
+        r = self.provider.make_request('GET', 'receipts/' + tx_hash, {})
         if r.status_code != 200:
             print(r.text)
+            return {}
+
+        return r.json()['receipt']
+
+    def getBlock(self, height):
+        heightStr = ''
+        if height == -1:
+            heightStr = 'latest'
+        else:
+            heightStr = str(height)
+        r = self.provider.make_request('GET', 'blocks/' + heightStr, {'transactions':'true'})
+        if r.status_code != 200:
+            #print(r.text)
             return {}
         
         return r.json()['block']
@@ -57,7 +75,10 @@ class Cli:
         data = {'type': type}
         for k, v in kwargs.items():
             if k == 'height':
-                data['height'] = v
+                if v == -1:
+                    data['height'] = 'latest'
+                else:
+                    data['height'] = v
             else:
                 assert False
         r = self.provider.make_request('GET', 'containers/' + address + '/' + id + '/' + key, data)

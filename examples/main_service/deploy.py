@@ -34,26 +34,32 @@ main_svc_contract = cli.eth.contract(
 )
 
 account = Account(private_key)
-tx1, hash1 = account.sign(storage_svc_contract.constructor().buildTransaction({
+raw_tx, tx_hash = account.sign(storage_svc_contract.constructor().buildTransaction({
     'nonce': 1,
-    'gas': 1000000,
+    'gas': 1000000000,
     'gasPrice': 1,
 }))
-tx2, hash2 = account.sign(computing_svc_contract.constructor().buildTransaction({
-    'nonce': 2,
-    'gas': 1000000,
-    'gasPrice': 1,
-}))
-tx3, hash3 = account.sign(main_svc_contract.constructor().buildTransaction({
-    'nonce': 3,
-    'gas': 1000000,
-    'gasPrice': 1,
-}))
+cli.sendTransactions({tx_hash: raw_tx})
+receipt = wait_for_receipt(cli, tx_hash)
+storage_svc_address = receipt['contractAddress']
 
-cli.sendTransactions({hash1: tx1, hash2: tx2, hash3: tx3})
-receipt1 = wait_for_receipt(cli, hash1)
-receipt2 = wait_for_receipt(cli, hash2)
-receipt3 = wait_for_receipt(cli, hash3)
+raw_tx, tx_hash = account.sign(computing_svc_contract.constructor().buildTransaction({
+    'nonce': 2,
+    'gas': 1000000000,
+    'gasPrice': 1,
+}))
+cli.sendTransactions({tx_hash: raw_tx})
+receipt = wait_for_receipt(cli, tx_hash)
+computing_svc_address = receipt['contractAddress']
+
+raw_tx, tx_hash = account.sign(main_svc_contract.constructor().buildTransaction({
+    'nonce': 3,
+    'gas': 1000000000,
+    'gasPrice': 1,
+}))
+cli.sendTransactions({tx_hash: raw_tx})
+receipt = wait_for_receipt(cli, tx_hash)
+main_svc_address = receipt['contractAddress']
 
 print('Deployment complete, run this command to start the test:')
-print('python3 run.py {} {} {} {} {}'.format(frontend, private_key, receipt1['contractAddress'], receipt2['contractAddress'], receipt3['contractAddress']))
+print('python3 run.py {} {} {} {} {}'.format(frontend, private_key, storage_svc_address, computing_svc_address, main_svc_address))

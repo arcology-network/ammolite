@@ -14,7 +14,8 @@ contract StorageService {
         hashmap.create("map4", int32(ConcurrentLib.DataType.UINT256), int32(ConcurrentLib.DataType.BYTES));
     }
     
-    function func(uint256 key, uint256 args, bytes memory data) public {
+    //function func(uint256 key, uint256 args, bytes memory data) public {
+    function func(uint256 key, uint256 args) public {
         uint256 arg1 = args & 0xff;
         if (arg1 != 0) {
             hashmap.set("map1", key, hashmap.getUint256("map1", key)+arg1);
@@ -30,9 +31,9 @@ contract StorageService {
             hashmap.set("map3", key, arg3);
         }
         
-        if (data.length > 0) {
-            hashmap.set("map4", key, data);
-        }
+        //if (data.length > 0) {
+        //    hashmap.set("map4", key, data);
+        //}
     }
     
     function check(uint256 key) public {
@@ -67,7 +68,8 @@ contract ComputingService {
 contract MainService {
     ConcurrentHashMap constant hashmap = ConcurrentHashMap(0x81);
     
-    event Checker(uint256, uint256, uint256, uint256, uint256, uint256, bytes);
+    // event Checker(uint256, uint256, uint256, uint256, uint256, uint256, bytes);
+    event Checker(uint256, uint256, uint256, uint256, uint256, uint256);
     
     constructor() public {
         hashmap.create("map1", int32(ConcurrentLib.DataType.UINT256), int32(ConcurrentLib.DataType.UINT256));
@@ -78,10 +80,12 @@ contract MainService {
         hashmap.create("map6", int32(ConcurrentLib.DataType.UINT256), int32(ConcurrentLib.DataType.BYTES));
     }
     
-    function func(uint256 key, uint256 args, bytes memory data, address storageSvc, uint256 sargs, address computeSvc, uint256 cargs) payable public {
+    //function func(uint256 key, uint256 args, bytes memory data, address storageSvc, uint256 sargs, address computeSvc, uint256 cargs) payable public {
+    function func(uint256 key, uint256 args, address storageSvc, uint256 sargs, address computeSvc, uint256 cargs) payable public {
         if (storageSvc != address(0)) {
             StorageService svc = StorageService(storageSvc);
-            svc.func(key, sargs, data);
+            //svc.func(key, sargs, data);
+            svc.func(key, sargs);
         }
         
         if (computeSvc != address(0)) {
@@ -119,9 +123,9 @@ contract MainService {
             msg.sender.transfer(arg6);
         }
         
-        if (data.length > 0) {
-            hashmap.set("map6", key, data);
-        }
+        //if (data.length > 0) {
+        //    hashmap.set("map6", key, data);
+        //}
     }
     
     function check(uint256 key) public {
@@ -131,8 +135,8 @@ contract MainService {
             hashmap.getUint256("map2", key),
             hashmap.getUint256("map3", key),
             hashmap.getUint256("map4", key),
-            hashmap.getUint256("map5", key),
-            hashmap.getBytes("map6", key)
+            hashmap.getUint256("map5", key)
+            // hashmap.getBytes("map6", key)
         );
     }
 }

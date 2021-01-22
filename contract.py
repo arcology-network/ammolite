@@ -3,6 +3,48 @@ import base64
 # import copy
 from eth_hash.auto import keccak
 
+def toHexString(value, aligned_left):
+    hexStr = ''
+    if type(value) is int:
+        hexStr = hex(value)[2:]
+    elif type(value) is bytes:
+        hexStr = value.hex()
+    elif type(value) is str:
+        if value[:2] == '0x':
+            hexStr = value[2:]
+        else:
+            hexStr = value
+    else:
+        assert False
+    if aligned_left:
+        return hexStr + '0' * (64 - len(hexStr))
+    else:
+        return '0' * (64 - len(hexStr)) + hexStr
+
+def encodeArguments(abi_inputs, args):
+    if len(abi_inputs) != len(args):
+        assert False
+    data = ''
+    index = 0
+    offset = len(args)
+    vars = []
+    for input in abi_inputs:
+        if (str.startswith(input['type'], 'uint') or str.startswith(input['type'], 'int')) and input['type'][-2:] != '[]':
+            data += toHexString(args[index], False)
+        elif input['type'] == 'address':
+            data += toHexString(args[index], False)
+        elif str.startswith(input['type'], 'bytes') and input['type'][-2:] != '[]':
+            data += toHexString(offset * 16, False)
+            offset += int((len(args[index]) - 1) / 32) + 1
+            vars.append(args[index])
+        else:
+            assert False
+        index += 1
+    for v in vars:
+        data += toHexString(len(v), False)
+        data += toHexString(v, True)
+    return data
+
 class ContractConstructor:
     data: str
     tx = {
@@ -167,25 +209,25 @@ class Contract:
             return ContractFunctions(self.abi, self.address)
 
     def processReceipt(self, receipt):
-        if 'logs' not in receipt:
+        if 'logs' not in receipt or receipt['logs'] is None:
             return {}
         events = {}
         for log in receipt['logs']:
-            if log['address'][2:] != self.address:
+            if log['address'] != self.address:
                 continue
             
-            signature = log['topics'][0][2:]
+            signature = log['topics'][0]
             if signature not in self.events:
                 continue
 
             args = {}
             index = 1
             for i in self.events[signature]['indexed']:
-                args[i] = log['topics'][index][2:]
+                args[i] = log['topics'][index]
                 index += 1
             index = 0
             for i in self.events[signature]['indexless']:
-                args[i] = base64.b64decode(log['data'])[index*32:(index+1)*32].hex()
+                args[i] = log['data'][index*64:(index+1)*64]
                 index += 1
             events[self.events[signature]['name']] = args
         return events
